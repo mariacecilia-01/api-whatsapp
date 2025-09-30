@@ -5,7 +5,6 @@
  * Versão: 1.0
 **************************************************************************************************************/
 
-const { profile } = require('console')
 const dados = require('./contatos.js')
 
 const MESSAGE_ERROR = {status: false, status_code: 500, developer: 'Maria Cecilia Pereira Jardim'}
@@ -29,24 +28,134 @@ const getAllUsers = function(){
     }
 }
 
-const getUserProfile = function(){
-    let dataUser = dados.contatos['whats-users'].find(dados => dados)
+//Função para retornar um usuário com base no número de telefone.
+//Testada: funcionando.
+const getUserProfile = function(number){  
+        let message = {status: true, status_code:200, developer:'Maria Cecilia Pereira Jardim', profile : []}
 
-    let message = {status: true, status_code:200, developer:'Maria Cecilia Pereira Jardim', profile : dataUser}
+            dados.contatos['whats-users'].forEach(function(item){
+                if(item.number == number){
+                message.profile.push({
+                name: item.account,
+                nick: item.nickname,
+                photo: item['profile-image'],
+                number: item.number,
+                background_color: item.background,
+                created: item['created-since'].start,
+                ended: item['created-since'].end
+            })
+        }
+    })
 
-    console.log(message)
+    if(message.profile.length > 0){
+        return message
+    } else{
+        return MESSAGE_ERROR
+    }
+}
 
-    if(dataUser){
+//Função para retornar todos os contatos de um usuário, com base no número de telefone.
+//Testada = funcionando
+const getUserContact = function(number){
+    let message = {status: true, status_code: 200, developer:'Maria Cecilia Pereira Jardim', name: '', contacts : []}
+    
+    dados.contatos['whats-users'].forEach(function(item){
+        if(item.number == number){
+            message.name = item.account
+            item.contacts.forEach(function(itemContato){
+                message.contacts.push({
+                    name_contact: itemContato.name,
+                    photo: itemContato.image,
+                    description: itemContato.description
+                })
+            })
+        }
+    })
+
+    if(message.contacts.length > 0){
         return message
     }else{
         return MESSAGE_ERROR
     }
-    
 }
 
-getUserProfile('11966578996')
+//Função para retornar todas as mensagens de um usuário, com base no numero de telefone.
+//Testada = funcionando.
+const getUserMessages = function(number){
+    let message = {status: true, status_code: 200, developer:'Maria Cecilia Pereira Jardim', messages : []}
+
+    dados.contatos['whats-users'].forEach(function(item){
+        if(item.number == number){
+            item.contacts.forEach(function(itemContato){
+                itemContato.messages.forEach(function(itemMensagens){
+                    message.messages.push({
+                        destinario: itemMensagens.sender,
+                        mensagem: itemMensagens.content,
+                        horario: itemMensagens.time
+                    })
+                })
+            })
+        }
+    })
+
+    if(message.messages.length > 0){
+        return message
+    }else{
+        return MESSAGE_ERROR
+    }
+}
+
+// Função para retornar o chat com apenas um usuário, com base no numero de telefone dos dois
+// Testada = funcionando.
+const getChatUser = function(numberUser, numberContact){
+    let dadosUsuario = dados.contatos['whats-users'].find(usuario => usuario.number == numberUser)
+    let dadosContato = dadosUsuario.contacts.find(contato => contato.number == numberContact)
+
+    let message = {status: true, status_code: 200, developer:'Maria Cecilia Pereira Jardim', chat : dadosContato.messages}
+
+    if(message.chat.length > 0){
+        return message
+    }else{
+        return MESSAGE_ERROR
+    }
+}
+
+//ta buscando a palavra chave, mas falta fazer pra mostrar a mensagem da onde ta saindo a palavra chave.
+const getKeyword = function(keyword, numberUser, numberContact){
+    let message = {status: true, status_code: 200, developer:'Maria Cecilia Pereira Jardim', messagesKeyword : []}
+
+    dados.contatos['whats-users'].forEach(function(item){
+        if(item.number == numberUser || item.number == numberContact){
+            item.contacts.forEach(function(itemContato){
+                itemContato.messages.filter(mensagem => mensagem.content.toLowerCase().includes(keyword.toLowerCase())
+                )
+                message.messagesKeyword.push({
+                    name: item.account,
+                    contato: itemContato.name,
+                    palavra_chave: keyword,
+                    mensagem: 
+                    })
+            })
+        }
+    })
+
+    if(message.messagesKeyword.length > 0){
+        return message
+    }else{
+        return MESSAGE_ERROR
+    }
+}
+
+
+  
+
+console.log(getKeyword('you', '11987876567', '26999999963'))
 
 module.exports = {
     getAllUsers,
-    getUserProfile
+    getUserProfile,
+    getUserContact,
+    getUserMessages,
+    getChatUser,
+    getKeyword
 }
