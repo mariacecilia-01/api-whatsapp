@@ -61,3 +61,27 @@ app.get('/v1/user-messages/:number', function(request, response) {
     return response.status(result.status_code).json(mensagensUser)
 })
 
+app.get('/v1/chat/:numberUser/:numberContact', function(request, response) {
+    const numberUser = request.params.numberUser
+    const numberContact = request.params.numberContact
+
+    const chatUser = getChatUser(numberUser, numberContact)
+
+    return response.status(result.status_code).json(chatUser)
+})
+
+app.get('/v1/messages/search', function(request, response) {
+    const keyword = request.query.keyword
+    const numberUser = request.query.numberUser
+    const numberContact = request.query.numberContact
+
+    const palavraChave = getKeyword(keyword, numberUser, numberContact)
+
+    return response.status(result.status_code).json(palavraChave)
+})
+
+app.listen(PORT, function(){
+    console.log('API aguardando por requisições!')
+})
+
+
