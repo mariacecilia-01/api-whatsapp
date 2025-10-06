@@ -120,36 +120,45 @@ const getChatUser = function(numberUser, numberContact){
     }
 }
 
-//ta buscando a palavra chave, mas falta fazer pra mostrar a mensagem da onde ta saindo a palavra chave.
-const getKeyword = function(keyword, numberUser, numberContact){
-    let message = {status: true, status_code: 200, developer:'Maria Cecilia Pereira Jardim', messagesKeyword : []}
+//função para buscar as mensagens pela palavra chave.
+//Testada = funcionando.
+const getKeyword = function(keyword, numberUser, numberContact) {
+    let message = {status: true, status_code: 200, developer: 'Maria Cecilia Pereira Jardim', messagesKeyword: []
+    }
 
-    dados.contatos['whats-users'].forEach(function(item){
-        if(item.number == numberUser || item.number == numberContact){
-            item.contacts.forEach(function(itemContato){
-                itemContato.messages.filter(mensagem => mensagem.content.toLowerCase().includes(keyword.toLowerCase())
-                )
-                message.messagesKeyword.push({
-                    name: item.account,
-                    contato: itemContato.name,
-                    palavra_chave: keyword,
-                    mensagem: 
-                    })
-            })
+    dados.contatos['whats-users'].forEach(function(item) {
+        if (item.number == numberUser || item.number == numberContact) {
+            item.contacts.forEach(function(itemContato) {
+
+                //filtro das mensagens que possui a palavras chave testada
+                const mensagensEncontradas = itemContato.messages.filter(mensagem =>
+                    mensagem.content.toLowerCase().includes(keyword.toLowerCase())
+                );
+
+                // Se achou alguma mensagem, adiciona ao resultado, usando a filtragem feita nas mensagens
+                if (mensagensEncontradas.length > 0) {
+                    message.messagesKeyword.push({
+                        name: item.account,
+                        contato: itemContato.name,
+                        palavra_chave: keyword,
+                        mensagens: mensagensEncontradas
+                    });
+                }
+            });
         }
-    })
+    });
 
-    if(message.messagesKeyword.length > 0){
-        return message
-    }else{
-        return MESSAGE_ERROR
+    if (message.messagesKeyword.length > 0) {
+        return message;
+    } else {
+        return MESSAGE_ERROR;
     }
 }
 
 
   
 
-console.log(getKeyword('you', '11987876567', '26999999963'))
+console.log(getKeyword('going', '11966578996', '26999999910'))
 
 module.exports = {
     getAllUsers,
