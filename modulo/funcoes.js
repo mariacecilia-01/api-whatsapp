@@ -155,11 +155,6 @@ const getKeyword = function(keyword, numberUser, numberContact) {
     }
 }
 
-
-  
-
-console.log(getKeyword('going', '11966578996', '26999999910'))
-
 module.exports = {
     getAllUsers,
     getUserProfile,
