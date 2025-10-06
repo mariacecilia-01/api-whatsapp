@@ -31,12 +31,15 @@ app.use((request, response, next) => {
 })
 
 //ENDPOINTS
+
+//testada no postman
 app.get('/v1/whats-users', function(request, response){
     let users = dados.getAllUsers()
 
     return response.status(users.status_code).json(users)
 })
 
+//testada no postman
 app.get('/v1/user-profile/:number', function(request, response){
     let userNumber = request.params.number
 
@@ -45,25 +48,28 @@ app.get('/v1/user-profile/:number', function(request, response){
     return response.status(user.status_code).json(user)
 })
 
+//testada no postman
 app.get('/v1/user-contacts/:number', function(request, response) {
-    const userNumber = request.params.number
+    const userNumber = dados.getUserContact
 
     const contatoUser = getUserContact(userNumber)
 
-    return response.status(result.status_code).json(contatoUser)
+    return response.status(contatoUser.status_code).json(contatoUser)
 })
 
-app.get('/v1/user-messages/:number', function(request, response) {
-    const userNumber = request.params.number
+//está dando erro no postman
+app.get('/v1/user-messages', function(request, response) {
+    const userNumber = request.query.number
 
-    const mensagensUser = getUserMessages(userNumber)
+    const mensagensUser = dados.getUserMessages(userNumber)
 
-    return response.status(result.status_code).json(mensagensUser)
+    response.status(mensagensUser.status_code)
+    response.json(mensagensUser)
 })
 
 app.get('/v1/chat/:numberUser/:numberContact', function(request, response) {
-    const numberUser = request.params.numberUser
-    const numberContact = request.params.numberContact
+    const numberUser = request.query.numberUser
+    const numberContact = request.query.numberContact
 
     const chatUser = getChatUser(numberUser, numberContact)
 
