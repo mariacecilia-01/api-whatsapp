@@ -18,7 +18,7 @@ const bodyParser = require('body-parser') //responsável por gerenciar a chegada
 //import do arquivo de funções
 const dados = require('./modulo/funcoes.js')
 
-const PORT = process.PORT || 8080
+const PORT = process.env.PORT|| 8080
 
 const app = express()
 
@@ -49,15 +49,14 @@ app.get('/v1/user-profile/:number', function(request, response){
 })
 
 //testada no postman
-app.get('/v1/user-contacts/:number', function(request, response) {
-    const userNumber = dados.getUserContact
-
-    const contatoUser = getUserContact(userNumber)
+app.get('/v1/user-contacts', function(request, response) {
+    const userNumber = request.query.number
+    const contatoUser = dados.getUserContact(userNumber)
 
     return response.status(contatoUser.status_code).json(contatoUser)
 })
 
-//está dando erro no postman
+//testada no postman
 app.get('/v1/user-messages', function(request, response) {
     const userNumber = request.query.number
 
@@ -67,23 +66,25 @@ app.get('/v1/user-messages', function(request, response) {
     response.json(mensagensUser)
 })
 
-app.get('/v1/chat/:numberUser/:numberContact', function(request, response) {
+//testada no postman
+app.get('/v1/chat', function(request, response) {
     const numberUser = request.query.numberUser
     const numberContact = request.query.numberContact
 
-    const chatUser = getChatUser(numberUser, numberContact)
+    const chatUser = dados.getChatUser(numberUser, numberContact)
 
-    return response.status(result.status_code).json(chatUser)
+    return response.status(chatUser.status_code).json(chatUser)
 })
 
+//testada no postman
 app.get('/v1/messages/search', function(request, response) {
     const keyword = request.query.keyword
     const numberUser = request.query.numberUser
     const numberContact = request.query.numberContact
 
-    const palavraChave = getKeyword(keyword, numberUser, numberContact)
+    const palavraChave = dados.getKeyword(keyword, numberUser, numberContact)
 
-    return response.status(result.status_code).json(palavraChave)
+    return response.status(palavraChave.status_code).json(palavraChave)
 })
 
 app.listen(PORT, function(){
