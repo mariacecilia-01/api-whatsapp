@@ -65,6 +65,7 @@ const getUserContact = function(number){
             item.contacts.forEach(function(itemContato){
                 message.contacts.push({
                     name_contact: itemContato.name,
+                    number: itemContato.number,
                     photo: itemContato.image,
                     description: itemContato.description
                 })
